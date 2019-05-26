@@ -48,8 +48,8 @@ class TicTacToe
     display_board
   end
 
-  def valid_move?(index)	
-    !position_taken?(index) && index.between?(0,8)	
+  def valid_move?(index)
+    !position_taken?(index) && index.between?(0,8)
   end
 
   def current_player
@@ -68,8 +68,8 @@ class TicTacToe
     @board.count{|token| token == "X" || token == "O"}
   end
 
-  def move(index, token)	
-    @board[index] = token	
+  def move(index, token)
+    @board[index] = token
   end
 
   def won?
