@@ -1,22 +1,23 @@
 require 'pry'
 
-class TicTacToe
-  def initialize (board = nil)
+class TicTacToe 
+
+   def initialize(board = nil) 
     @board = board || Array.new(9, " ")
   end
 
-  WIN_COMBINATIONS = [
-    [0, 1, 2], # Top row
-    [3, 4, 5], # Middle row
-    [6, 7, 8], # Bottom
-    [0, 3, 6], # Left column
-    [1, 4, 7], # Middle column
-    [2, 5, 8], # Right column
-    [0, 4, 8], # Left/Right diagonal
-    [2, 4, 6] # Right/Left diagonal
+   WIN_COMBINATIONS = [
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+    [0,4,8],
+    [6,4,2]
   ]
 
-  def display_board
+   def display_board 
     puts " #{@board[0]} | #{@board[1]} | #{@board[2]} "
     puts "-----------"
     puts " #{@board[3]} | #{@board[4]} | #{@board[5]} "
@@ -24,91 +25,102 @@ class TicTacToe
     puts " #{@board[6]} | #{@board[7]} | #{@board[8]} "
   end
 
-  def input_to_index(input)
-    @index = input.to_i - 1
+   def move(location, character = "X")
+    @board[location.to_i - 1] = character
   end
 
-  def move(index, token = "X")
-    if valid_move?(index)
-      @board[index] = token
+   def position_taken?(position)
+    if @board[position] == "X" || @board[position] == "O"
+      true
+    else
+      false
+    end 
+  end
+
+   def valid_move?(position)
+    position = position.to_i - 1
+    if position.between?(0,8) && !position_taken?(position)
+      true
+    else
+      false
     end
   end
 
-  def position_taken?(index)
-    !(@board[index] == " " || @board[index] == "" || @board[index] == nil)
+   def turn
+    puts "Please enter 1-9:"
+    input = gets.strip
+    if valid_move?(input)
+      move(input, current_player)
+    else
+      turn
+    end
+    display_board
   end
 
-  def valid_move?(index)
-    return !position_taken?(index) && index > 0 && index < 9
-  end
-
-  def turn_count
+   def turn_count
     counter = 0
-    @board.each do |pos|
-        if pos == "X" || pos == "O"
-          counter += 1
-        end
+    @board.each do |i|
+      if i == "X" || i == "O"
+        counter += 1
+      end
     end
     counter
   end
 
-  def current_player
+   def current_player
     turn_count % 2 == 0 ? "X" : "O"
   end
 
-  def turn
-    puts "It's #{current_player}'s turn."
-    puts "Please enter 1-9:"
-    input = gets.strip
-    if input == "exit"
-      over?("exit")
+
+
+   def won?
+
+     board_empty = @board.none? { |i| i == "X" || i = "O"}
+    if board_empty
+      false
+    else 
+      WIN_COMBINATIONS.each do |combo| 
+        if @board[combo[0]] == "X" && @board[combo[1]] == "X" && @board[combo[2]] == "X" || @board[combo[0]] == "O" && @board[combo[1]] == "O" && @board[combo[2]] == "O"
+          return combo
+        end
+      end
+      return false
+  end
+end
+
+   def full?
+    @board.all? { |i| i =="X" || i == "O"}
+  end
+
+   def draw?
+    !won? && full? ? true : false
+  end
+
+   def over?
+    won? || draw? || full? ? true : false
+  end
+
+   def winner 
+    WIN_COMBINATIONS.detect do |combo| 
+          if @board[combo[0]] == "X" && @board[combo[1]] == "X" && @board[combo[2]] == "X" 
+            return "X"
+          elsif @board[combo[0]] == "O" && @board[combo[1]] == "O" && @board[combo[2]] == "O"
+            return "O"
+          else 
+            nil
+          end
     end
-    index = input_to_index(input)
-    if valid_move?(index)
-      move(index, current_player)
-      display_board
-    else
+  end
+
+   def play
+    until over?
       turn
     end
-  end
 
-  def play
-    until over?
-
-    end
-    if over?
-      if draw?
-        puts "Cat's Game!"
-      end
-      if won?
-        puts "Congratulations #{@winner}!"
-      end
-    end
-  end
-
-  def over?
-    won? || draw?
-  end
-
-  def won?
-    WIN_COMBINATIONS.any? do |combo|
-      if position_taken?(combo[0]) && @board[combo[0]] == @board[combo[1]] && @board[combo[1]] == @board[combo[2]]
-        return combo	
-      end
-    end
-  end
-
-  def full?
-    !(@board.include?(" ") || @board.include?(""))
-  end
-
-  def draw?
-    !won? && full?
-  end
-
-  def winner
-    if won?
-      @board[won?[0]]
+     if won? 
+      puts "Congratulations #{winner}!"
+    elsif draw?
+      puts "Cats Game!"
     end
   end
 end
