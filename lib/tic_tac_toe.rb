@@ -1,8 +1,8 @@
 require 'pry'
 
-class TicTacToe 
+class TicTacToe
 
-   def initialize(board = nil) 
+   def initialize(board = nil)
     @board = board || Array.new(9, " ")
   end
 
@@ -17,7 +17,7 @@ class TicTacToe
     [6,4,2]
   ]
 
-   def display_board 
+   def display_board
     puts " #{@board[0]} | #{@board[1]} | #{@board[2]} "
     puts "-----------"
     puts " #{@board[3]} | #{@board[4]} | #{@board[5]} "
@@ -34,7 +34,7 @@ class TicTacToe
       true
     else
       false
-    end 
+    end
   end
 
    def valid_move?(position)
@@ -78,8 +78,8 @@ class TicTacToe
      board_empty = @board.none? { |i| i == "X" || i = "O"}
     if board_empty
       false
-    else 
-      WIN_COMBINATIONS.each do |combo| 
+    else
+      WIN_COMBINATIONS.each do |combo|
         if @board[combo[0]] == "X" && @board[combo[1]] == "X" && @board[combo[2]] == "X" || @board[combo[0]] == "O" && @board[combo[1]] == "O" && @board[combo[2]] == "O"
           return combo
         end
@@ -100,13 +100,13 @@ end
     won? || draw? || full? ? true : false
   end
 
-   def winner 
-    WIN_COMBINATIONS.detect do |combo| 
-          if @board[combo[0]] == "X" && @board[combo[1]] == "X" && @board[combo[2]] == "X" 
+   def winner
+    WIN_COMBINATIONS.detect do |combo|
+          if @board[combo[0]] == "X" && @board[combo[1]] == "X" && @board[combo[2]] == "X"
             return "X"
           elsif @board[combo[0]] == "O" && @board[combo[1]] == "O" && @board[combo[2]] == "O"
             return "O"
-          else 
+          else
             nil
           end
     end
@@ -117,7 +117,7 @@ end
       turn
     end
 
-     if won? 
+     if won?
       puts "Congratulations #{winner}!"
     elsif draw?
       puts "Cats Game!"
